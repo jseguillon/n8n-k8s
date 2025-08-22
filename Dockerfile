@@ -6,9 +6,8 @@ ARG TARGETARCH=amd64
 
 USER root
 
-RUN set -eux; \
-    apt-get update; apt-get install -y --no-install-recommends curl ca-certificates; rm -rf /var/lib/apt/lists/*; \
-    # --- kubectl (official Kubernetes download) ---
+RUN apt-get update; apt-get install -y --no-install-recommends curl ca-certificates; rm -rf /var/lib/apt/lists/*; \
+    # --- kubectl (GitHub release) ---
     curl -fsSLo /usr/local/bin/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl"; \
     chmod +x /usr/local/bin/kubectl; \
     # --- jq (GitHub release) ---
