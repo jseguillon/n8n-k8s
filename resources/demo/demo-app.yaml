@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fail-app
+  namespace: demo
+  labels: { app: fail-app }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: fail-app }
+  template:
+    metadata:
+      labels: { app: fail-app }
+    spec:
+      containers:
+        - name: boom
+          image: alpine:3.20
+          command: ["/bin/sh","-c"]
+          args: ["echo starting && sleep 5 && exit 1"]
+          # probes aren't necessary; the crash itself will be visible to kube-state-metrics
