@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: demo-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: demo.rules
+      rules:
+        - alert: DemoCrashLooping
+          expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", namespace="demo"} > 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod is crash looping in {{ $labels.namespace }}"
+            description: "Pod {{ $labels.pod }} (container {{ $labels.container }}) has been CrashLoopBackOff for >2m."
+        - alert: DemoPodNotReady
+          expr: kube_pod_status_ready{condition="true", namespace="demo"} == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod not ready in {{ $labels.namespace }}"
+            description: "Pod {{ $labels.pod }} has not been Ready for >5m."
